@@ -1704,6 +1704,8 @@ Epilogue - 新たな世界
   }
 
   function addCustomRule() {
+    // 既存行の入力値を保存してから追加（値がリセットされないよう）
+    customRulesData = getCustomRules();
     const id = ++ruleIdCounter;
     customRulesData.push({ id, enabled: true, from: '', to: '' });
     renderCustomRules();
