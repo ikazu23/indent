@@ -1060,13 +1060,11 @@
     let emptyCount    = 0;
 
     // 主語置換用の正規表現（単語境界的に前後が漢字・仮名でない位置）
-    const pronounRegex = activePronoun
-      ? new RegExp('(?<![\u3040-\u30ff\u4e00-\u9fff\uff66-\uff9f])(' +
-          PRONOUNS.filter(p => p !== activePronoun).map(p =>
-            p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-          ).join('|') +
-          ')(?![\u3040-\u30ff\u4e00-\u9fff\uff66-\uff9f])', 'g')
-      : null;
+    const pronounRegex = activePronoun ?
+      new RegExp('(' +
+        PRONOUNS.filter(p => p !== activePronoun).join  ('|')   +
+        ')', 'g') :
+      null;
 
     // 各行に種別を付けながら整形（1パス目：分類）
     // kind: 'empty' | 'dialogue' | 'system' | 'prose' | 'copyright' | 'bare-title'
