@@ -1755,25 +1755,3 @@ Epilogue - 新たな世界
 </script>
 </body>
 </html>
-ue) processText();
-    }, 200);
-  }
-
-  document.getElementById('input').addEventListener('input', debounceProcess);
-  document.querySelectorAll('input[type=checkbox], select').forEach(el => {
-    el.addEventListener('change', debounceProcess);
-  });
-  // 空行詰めチェックボックスも登録（querySelectorAllに含まれるが念のため）
-  ['compactProse','compactDialogue','compactSystem','titleBlankLines','copyrightJoin',
-   'unifyEllipsis','unifyDash','fixMessatsu'].forEach(id => {
-    document.getElementById(id).addEventListener('change', debounceProcess);
-  });
-
-  // デフォルト: パート番号は半角 (1)、タイトル整形は Episode 1.、主語は 俺 をアクティブ表示
-  document.getElementById('tfmt-part-half').classList.add('active');
-  document.getElementById('tfmt-ep-dot').classList.add('active');
-  document.getElementById('cv-pronoun-ore').classList.add('active');
-
-  // カスタム置換の初期化（空のリスト）
-  renderCustomRules();
-</scrip
