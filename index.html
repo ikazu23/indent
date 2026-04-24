@@ -89,6 +89,8 @@
     align-items: center;
   }
 
+
+
   .control-group {
     display: flex;
     align-items: center;
@@ -159,6 +161,374 @@
   .btn.secondary:hover {
     background: var(--ink);
     color: var(--paper);
+  }
+
+  /* 変換バー */
+  .convert-bar {
+    border: 1px solid var(--rule);
+    border-top: none;
+    background: var(--paper);
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    min-height: 2.6rem;
+  }
+
+  .convert-bar-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    padding-right: 1.2rem;
+    border-right: 1px solid var(--rule);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+  }
+
+  /* トグルボタン */
+  .convert-group {
+    display: flex;
+    align-items: stretch;
+    border-left: 1px solid var(--rule);
+  }
+
+  .convert-group + .convert-group {
+    border-left: 2px solid var(--rule);
+  }
+
+  .btn-convert {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 400;
+    padding: 0 1.1rem;
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    border-left: 1px solid var(--rule);
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.35em;
+    user-select: none;
+  }
+
+  .convert-group .btn-convert:first-child {
+    border-left: none;
+  }
+
+  .btn-convert:hover { color: var(--ink); }
+
+  .btn-convert.active {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .btn-convert .from { font-weight: 500; }
+  .btn-convert .arrow { opacity: 0.4; font-size: 0.6rem; }
+  .btn-convert.active .arrow { opacity: 0.55; }
+
+  /* 主語変換バー */
+  .pronoun-bar {
+    border: 1px solid var(--rule);
+    border-top: none;
+    background: var(--paper-dark);
+    padding: 0.7rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .pronoun-bar-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .pronoun-options {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn-pronoun {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    width: 3rem;
+    height: 2rem;
+    background: var(--paper);
+    color: var(--muted);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.12s;
+    user-select: none;
+  }
+
+  .btn-pronoun:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .btn-pronoun.active {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
+
+  .pronoun-note {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-left: auto;
+  }
+
+  /* 置換バー（記号統一・定型置換） */
+  .replace-bar {
+    border: 1px solid var(--rule);
+    border-top: none;
+    background: var(--paper);
+    padding: 0.7rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+  }
+
+  .replace-bar-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* カスタム置換セクション */
+  .custom-bar {
+    border: 1px solid var(--rule);
+    border-top: none;
+    background: var(--paper-dark);
+    padding: 0.7rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .custom-bar-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+
+  .custom-bar-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .custom-rules {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-top: 0.3rem;
+  }
+
+  .custom-rule-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .custom-rule-row input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .custom-rule-row input[type="text"] {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 0.9rem;
+    padding: 0.3rem 0.6rem;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    color: var(--ink);
+    border-radius: 2px;
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .custom-rule-row .arrow {
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+  }
+
+  .custom-rule-row .remove-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.12s;
+  }
+
+  .custom-rule-row .remove-btn:hover {
+    background: var(--accent);
+    color: var(--paper);
+    border-color: var(--accent);
+  }
+
+  .custom-add-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.8rem;
+    background: transparent;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    cursor: pointer;
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    transition: all 0.12s;
+  }
+
+  .custom-add-btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  /* タイトル整形バー */
+  .title-bar {
+    border: 1px solid var(--rule);
+    border-top: none;
+    background: var(--paper-dark);
+    padding: 0.7rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+  }
+
+  .title-bar-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .title-format-options {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-title-fmt {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.3rem 0.75rem;
+    background: var(--paper);
+    color: var(--muted);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.12s;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .btn-title-fmt:hover {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .btn-title-fmt.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  .title-bar-note {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-left: auto;
+  }
+
+  /* 空行詰めバー */
+  .compact-bar {
+    border: 1px solid var(--rule);
+    border-top: none;
+    background: var(--paper);
+    padding: 0.7rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .compact-bar-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .compact-options {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .compact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    user-select: none;
+    color: var(--ink);
+  }
+
+  .compact-item input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  .compact-note {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-left: auto;
   }
 
   .editor-grid {
@@ -310,10 +680,11 @@
       <h1>字下げツール</h1>
       <span class="subtitle">Indent Formatter</span>
     </div>
-    <span class="version">v1.0</span>
+    <span class="version">v1.2</span>
   </header>
 
   <div class="controls">
+    <!-- 字下げ設定 -->
     <div class="control-group">
       <label>字下げ文字:</label>
       <select id="indentChar">
@@ -357,6 +728,122 @@
       <button class="btn" onclick="processText()">整形する</button>
       <button class="btn secondary" onclick="swapText()">⇄ 結果を入力へ</button>
     </div>
+
+  </div>
+
+  <!-- 記号変換バー -->
+  <div class="convert-bar">
+    <span class="convert-bar-label">記号変換</span>
+    <div class="convert-group">
+      <button class="btn-convert" id="cv-full2half" onclick="toggleConvert('full2half')" title="＊を*に、＋を+に変換">
+        <span class="from">＊＋</span><span class="arrow">▶</span><span class="to">*+</span>
+      </button>
+      <button class="btn-convert" id="cv-half2full" onclick="toggleConvert('half2full')" title="*を＊に、+を＋に変換">
+        <span class="from">*+</span><span class="arrow">▶</span><span class="to">＊＋</span>
+      </button>
+    </div>
+    <div class="convert-group">
+      <button class="btn-convert" id="cv-bracket2half" onclick="toggleConvert('bracket2half')" title="［］を[]に変換">
+        <span class="from">［］</span><span class="arrow">▶</span><span class="to">[]</span>
+      </button>
+      <button class="btn-convert" id="cv-bracket2full" onclick="toggleConvert('bracket2full')" title="[]を［］に変換">
+        <span class="from">[]</span><span class="arrow">▶</span><span class="to">［］</span>
+      </button>
+    </div>
+    <div class="convert-group">
+      <button class="btn-convert" id="cv-angle2half" onclick="toggleConvert('angle2half')" title="＜＞を<>に変換">
+        <span class="from">＜＞</span><span class="arrow">▶</span><span class="to">&lt;&gt;</span>
+      </button>
+      <button class="btn-convert" id="cv-angle2full" onclick="toggleConvert('angle2full')" title="<>を＜＞に変換">
+        <span class="from">&lt;&gt;</span><span class="arrow">▶</span><span class="to">＜＞</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 主語変換バー -->
+  <div class="pronoun-bar">
+    <span class="pronoun-bar-label">地の文・主語統一</span>
+    <div class="pronoun-options">
+      <button class="btn-pronoun" id="cv-pronoun-ore"  onclick="togglePronoun('俺')"  title="地の文の俺・僕・私・オレを「俺」に統一">俺</button>
+      <button class="btn-pronoun" id="cv-pronoun-boku" onclick="togglePronoun('僕')"  title="地の文の俺・僕・私・オレを「僕」に統一">僕</button>
+      <button class="btn-pronoun" id="cv-pronoun-wata" onclick="togglePronoun('私')"  title="地の文の俺・僕・私・オレを「私」に統一">私</button>
+      <button class="btn-pronoun" id="cv-pronoun-ore2" onclick="togglePronoun('オレ')" title="地の文の俺・僕・私・オレを「オレ」に統一">オレ</button>
+    </div>
+    <span class="pronoun-note">選択した語に統一（地の文のみ・出力に反映）</span>
+  </div>
+
+  <!-- 記号統一バー -->
+  <div class="replace-bar">
+    <span class="replace-bar-label">記号統一</span>
+    <label class="checkbox-item">
+      <input type="checkbox" id="unifyEllipsis" checked>
+      <span>三点リーダを「……」に統一</span>
+    </label>
+    <label class="checkbox-item">
+      <input type="checkbox" id="unifyDash" checked>
+      <span>ダッシュを「――」に統一</span>
+    </label>
+    <label class="checkbox-item">
+      <input type="checkbox" id="fixMessatsu" checked>
+      <span>「滅殺法」→「滅生法」</span>
+    </label>
+  </div>
+
+  <!-- カスタム置換バー -->
+  <div class="custom-bar">
+    <div class="custom-bar-header">
+      <span class="custom-bar-label">カスタム置換</span>
+      <span style="font-size:0.75rem; color:var(--muted);">原稿全体に適用されます（地の文・会話文・システム行すべて）</span>
+    </div>
+    <div class="custom-rules" id="customRules">
+      <!-- 動的に追加される -->
+    </div>
+    <button class="custom-add-btn" onclick="addCustomRule()">＋ 置換ルールを追加</button>
+  </div>
+
+  <!-- タイトル整形バー -->
+  <div class="title-bar">
+    <span class="title-bar-label">タイトル整形</span>
+    <div class="title-format-options">
+      <button class="btn-title-fmt" id="tfmt-ep-dot"   onclick="toggleTitleFmt('ep-dot')"   title="例: ＜ Episode 1. はる (1) ＞">Episode 1.</button>
+      <button class="btn-title-fmt" id="tfmt-ep-jp"    onclick="toggleTitleFmt('ep-jp')"    title="例: ＜ エピソード 1. はる (1) ＞">エピソード 1.</button>
+      <button class="btn-title-fmt" id="tfmt-wa"       onclick="toggleTitleFmt('wa')"       title="例: ＜ 第1話： はる (1) ＞">第1話：</button>
+      <button class="btn-title-fmt" id="tfmt-shou"     onclick="toggleTitleFmt('shou')"     title="例: ＜ 第1章： はる (1) ＞">第1章：</button>
+    </div>
+    <div class="title-format-options" style="border-left: 1px solid var(--rule); padding-left: 1rem; margin-left: 0.25rem;">
+      <span style="font-size:0.72rem; color:var(--muted); margin-right:0.4rem; white-space:nowrap;">パート番号</span>
+      <button class="btn-title-fmt" id="tfmt-part-half" onclick="toggleTitlePartFmt('half')" title="パート番号を半角カッコ (1) で表記">(1)</button>
+      <button class="btn-title-fmt" id="tfmt-part-full" onclick="toggleTitlePartFmt('full')" title="パート番号を全角カッコ （1） で表記">（1）</button>
+    </div>
+    <div class="title-format-options" style="border-left: 1px solid var(--rule); padding-left: 1rem; margin-left: 0.25rem;">
+      <span style="font-size:0.72rem; color:var(--muted); margin-right:0.4rem; white-space:nowrap;">括弧内余白</span>
+      <button class="btn-title-fmt active" id="tfmt-pad-on" onclick="toggleTitlePad('on')" title="＜ タイトル ＞ のように括弧の内側に半角スペースを入れる">＜·タイトル·＞</button>
+      <button class="btn-title-fmt" id="tfmt-pad-off" onclick="toggleTitlePad('off')" title="＜タイトル＞ のように括弧の内側に余白を入れない">＜タイトル＞</button>
+    </div>
+    <span class="title-bar-note">Prologue→プロローグ / Epilogue→エピローグ に日本語化</span>
+  </div>
+
+  <!-- 空行詰めバー -->
+  <div class="compact-bar">
+    <span class="compact-bar-label">空行詰め</span>
+    <div class="compact-options">
+      <label class="compact-item">
+        <input type="checkbox" id="compactProse"> <span>地の文</span>
+      </label>
+      <label class="compact-item">
+        <input type="checkbox" id="compactDialogue"> <span>会話文</span>
+      </label>
+      <label class="compact-item">
+        <input type="checkbox" id="compactSystem"> <span>システム行</span>
+      </label>
+      <label class="compact-item" style="border-left: 1px solid var(--rule); padding-left: 1rem; margin-left: 0.25rem;">
+        <input type="checkbox" id="titleBlankLines" checked> <span>タイトル前後3行</span>
+      </label>
+      <label class="compact-item">
+        <input type="checkbox" id="copyrightJoin" checked> <span>末尾ⓒ詰め</span>
+      </label>
+    </div>
+    <span class="compact-note">同種のテキスト間の空行をすべて除去</span>
   </div>
 
   <div class="editor-grid">
@@ -399,6 +886,14 @@
     地の文の中で強調として使われる<code>「希望」という言葉</code>のような行は、行末が閉じ括弧ではないため地の文として字下げされます。
     句読点（<code>。、！？…</code>）が閉じ括弧の後に付いていても会話文として判定されます。
     行頭が<code>ⓒ</code><code>©</code>で始まる著者表記行も字下げしません。
+    <br><br>
+    <strong>記号変換:</strong>
+    入力テキストに対して直接変換を適用します。<code>＊→*</code> / <code>＋→+</code>（全角→半角）、<code>*→＊</code> / <code>+→＋</code>（半角→全角）、<code>［→[</code> / <code>］→]</code>、<code>[→［</code> / <code>]→］</code>、<code>＜→&lt;</code> / <code>＞→&gt;</code>（全角→半角）、<code>&lt;→＜</code> / <code>&gt;→＞</code>（半角→全角）。変換後は字下げが自動で再適用されます。
+    <br><br>
+    <strong>タイトル整形:</strong>
+    <code>＜ ＞</code>・<code>&lt; &gt;</code>で囲まれたタイトル行の番号表記を統一します。<code>Episode 21</code>・<code>第21話</code>・<code>21화</code>・<code>Chapter 21</code>などの多様な表記を検出し、選択したフォーマットに変換します。<code>Prologue</code>→<code>0</code>番、<code>Epilogue</code>→<code>Final</code>（または最終話/最終章）に変換。サブタイトルやパート番号<code>(1)</code>はそのまま保持されます。
+    <br>
+    <strong>括弧内余白</strong>を「<code>＜·タイトル·＞</code>」に設定すると<code>＜タイトル＞</code>→<code>＜ タイトル ＞</code>のように括弧の内側に半角スペースが挿入されます。「<code>＜タイトル＞</code>」側を選ぶと余白が削除されます。整形フォーマットを選択していなくても余白だけ調整できます。<code>＞完</code>のように閉じ括弧の後ろの文字（完／了／終）は外側に保持されます。
   </div>
 
   <footer>
@@ -424,7 +919,6 @@
   const INDENT_CHARS = ['　', ' ', '\t'];
 
   // 文末として扱える記号（閉じ括弧の後にこれらが付いていても会話文・タイトルとみなす）
-  // 「完」「了」「終」はエピソードタイトル末尾の「＜タイトル＞完」等に対応
   const TRAILING_PUNCT = ['。', '、', '！', '？', '!', '?', '…', '・', '　', ' ', '完', '了', '終'];
 
   // ⓒ著者表記の判定用プレフィックス
@@ -456,34 +950,106 @@
     return line.slice(i);
   }
 
-  // 行の末尾（句読点等を除いた最後の意味のある文字）を取得
   function getEffectiveLastChar(line) {
-    let i = line.length - 1;
-    while (i >= 0 && TRAILING_PUNCT.includes(line[i])) i--;
-    return i >= 0 ? line[i] : '';
+    // 複数文字の終了マーカーを先に処理（「終わり」「終り」）
+    // これらが末尾に付いている場合、括弧判定のために末尾から取り除く
+    let work = line.replace(/[\s　]*(?:終わり|終り)[\s　]*$/, '');
+    let i = work.length - 1;
+    while (i >= 0 && TRAILING_PUNCT.includes(work[i])) i--;
+    return i >= 0 ? work[i] : '';
   }
 
-  /**
-   * この行を「会話文/システムメッセージ」とみなすかを判定
-   * 判定基準：
-   *   行頭が有効な開き括弧で始まり、かつ
-   *   行末（句読点を除く最後の文字）がその開き括弧に対応する閉じ括弧
-   *   → 会話文として字下げしない
-   *
-   *   行頭に「があっても、行末が閉じ括弧でない（＝地の文の中の強調）
-   *   → 地の文として字下げする
-   */
-  function isDialogueLine(line, enabledOpeners) {
-    if (line.length === 0) return false;
+  // 会話文の開き括弧（セリフ系）
+  const DIALOGUE_OPENERS = new Set(['「', '『']);
+  // システム行の開き括弧
+  const SYSTEM_OPENERS   = new Set(['［', '[', '【', '＜', '<']);
+
+  // 区切り行とみなすパターン（＊・*・＋・+ のみで構成 or ハイフン4文字以上）
+  function isSeparatorLine(line) {
+    if (/^[-]{4,}$/.test(line)) return true;          // ----以上
+    if (/^[＊*＋+]+$/.test(line)) return true;         // ＊＊＊ / *** / ＋＋＋ など
+    return false;
+  }
+
+  function classifyLine(line, enabledOpeners) {
+    if (line.length === 0) return 'empty';
+    if (isSeparatorLine(line)) return 'separator';
+
     const firstChar = line[0];
-    if (!enabledOpeners.includes(firstChar)) return false;
+    if (!enabledOpeners.includes(firstChar)) return 'prose';
 
     const expectedCloser = BRACKET_PAIRS[firstChar];
     const lastChar = getEffectiveLastChar(line);
-    return lastChar === expectedCloser;
+    if (lastChar !== expectedCloser) return 'prose';
+
+    if (DIALOGUE_OPENERS.has(firstChar)) return 'dialogue';
+    if (SYSTEM_OPENERS.has(firstChar))   return 'system';
+    return 'dialogue';
   }
 
   function processText() {
+    // 選択中の変換を入力に適用してから整形
+    const inputEl = document.getElementById('input');
+    if (activeConvert.size > 0 && inputEl.value) {
+      if (activeConvert.has('full2half')) {
+        inputEl.value = inputEl.value.replaceAll('＊', '*').replaceAll('＋', '+');
+      } else if (activeConvert.has('half2full')) {
+        inputEl.value = inputEl.value.replaceAll('*', '＊').replaceAll('+', '＋');
+      }
+      if (activeConvert.has('bracket2half')) {
+        inputEl.value = inputEl.value.replaceAll('［', '[').replaceAll('］', ']');
+      } else if (activeConvert.has('bracket2full')) {
+        inputEl.value = inputEl.value.replaceAll('[', '［').replaceAll(']', '］');
+      }
+      if (activeConvert.has('angle2half')) {
+        inputEl.value = inputEl.value.replaceAll('＜', '<').replaceAll('＞', '>');
+      } else if (activeConvert.has('angle2full')) {
+        inputEl.value = inputEl.value.replaceAll('<', '＜').replaceAll('>', '＞');
+      }
+      updateInputStats();
+    }
+
+    // 記号統一
+    if (inputEl.value) {
+      // 三点リーダの統一（「……」）
+      if (document.getElementById('unifyEllipsis').checked) {
+        // 半角ドット3個以上、全角ドット3個以上、中黒3個以上、… 単独や ... を "……" に統一
+        // 2個以上の連続「…」や「...」は1セットの「……」に正規化
+        let v = inputEl.value;
+        // 3連続以上の半角ドット、全角ドット、中黒 → 一旦 … に変換
+        v = v.replace(/\.{3,}/g, '…');
+        v = v.replace(/．{3,}/g, '…');
+        v = v.replace(/・{3,}/g, '…');
+        // 既存の「…」が複数連続または単独の場合を「……」（2個）に統一
+        v = v.replace(/…+/g, '……');
+        inputEl.value = v;
+      }
+      // ダッシュの統一（「――」）
+      if (document.getElementById('unifyDash').checked) {
+        let v = inputEl.value;
+        // 長音記号ー/全角マイナス―/emダッシュ—/enダッシュ–/ハイフン- の連続（2個以上）を「――」に統一
+        // ただし単独の「ー」（長音）は置換しないよう注意：2個以上の連続だけを対象
+        v = v.replace(/―{2,}/g, '――');      // 既存の――連続
+        v = v.replace(/—{2,}/g, '――');       // emダッシュ連続
+        v = v.replace(/–{2,}/g, '――');       // enダッシュ連続
+        v = v.replace(/-{2,}/g, '――');       // 半角ハイフン連続
+        // 単独の em/en ダッシュも「――」に（記述で使われることが多い）
+        v = v.replace(/[—–]/g, '――');
+        inputEl.value = v;
+      }
+      // 滅殺法 → 滅生法
+      if (document.getElementById('fixMessatsu').checked) {
+        inputEl.value = inputEl.value.replaceAll('滅殺法', '滅生法');
+      }
+      // カスタム置換
+      const rules = getCustomRules();
+      for (const rule of rules) {
+        if (rule.enabled && rule.from) {
+          inputEl.value = inputEl.value.split(rule.from).join(rule.to);
+        }
+      }
+      updateInputStats();
+    }
     const input = document.getElementById('input').value;
     const lines = input.split('\n');
     const enabledOpeners = getEnabledOpeners();
@@ -493,30 +1059,483 @@
     let skippedCount  = 0;
     let emptyCount    = 0;
 
-    const result = lines.map(line => {
-      // 常に既存の字下げを削除してから再判定（仕様に基づく）
+    // 主語置換用の正規表現（単語境界的に前後が漢字・仮名でない位置）
+    const pronounRegex = activePronoun
+      ? new RegExp('(?<![\u3040-\u30ff\u4e00-\u9fff\uff66-\uff9f])(' +
+          PRONOUNS.filter(p => p !== activePronoun).map(p =>
+            p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+          ).join('|') +
+          ')(?![\u3040-\u30ff\u4e00-\u9fff\uff66-\uff9f])', 'g')
+      : null;
+
+    // 各行に種別を付けながら整形（1パス目：分類）
+    // kind: 'empty' | 'dialogue' | 'system' | 'prose' | 'copyright' | 'bare-title'
+    const tagged = lines.map(line => {
       const work = stripExistingIndent(line);
 
-      // 空行はそのまま
       if (work === '') {
         emptyCount++;
-        return '';
+        return { kind: 'empty', text: '', raw: work };
       }
 
-      if (isCopyrightLine(work) || isDialogueLine(work, enabledOpeners)) {
+      if (isCopyrightLine(work)) {
         skippedCount++;
-        return work;
-      } else {
-        indentedCount++;
-        return indent + work;
+        return { kind: 'copyright', text: work, raw: work };
       }
+
+      const kind = classifyLine(work, enabledOpeners);
+
+      if (kind === 'dialogue' || kind === 'system' || kind === 'separator') {
+        skippedCount++;
+        let processed = work;
+        // システム行（＜＞タイトル以外）の『』を「」に変換
+        // ［］・[]・【】 などのシステムメッセージ内の引用符を統一
+        if (kind === 'system' && !/^[＜<]/.test(work)) {
+          processed = processed.replaceAll('『', '「').replaceAll('』', '」');
+        }
+        const reformatted = (kind === 'system') ? reformatTitleLine(processed, activeTitleFmt, activeTitlePartFmt) : processed;
+        return { kind, text: reformatted, raw: work };
+      }
+
+      // prose候補 — 裸タイトル判定は2パス目で行う
+      indentedCount++;
+      // 地の文の『』を「」に変換
+      let proseText = work.replaceAll('『', '「').replaceAll('』', '」');
+      const converted = pronounRegex ? proseText.replace(pronounRegex, activePronoun) : proseText;
+      return { kind: 'prose', text: indent + converted, raw: work };
     });
+
+    // 2パス目：＜＞system行の直後（空行を挟んでもOK、1回まで）の
+    // 裸タイトルパターンの prose 行を 'bare-title' に昇格
+    // 整形フラグ未設定でも裸タイトルとして認識し、種別付けのみ行う（空行調整のため）
+    {
+      let awaitingBareTitle = false;
+      for (let i = 0; i < tagged.length; i++) {
+        const item = tagged[i];
+        if (item.kind === 'system' && /^[＜<]/.test(item.raw)) {
+          awaitingBareTitle = true;
+        } else if (item.kind === 'empty') {
+          // 空行はスキップ（待機継続）
+        } else if (awaitingBareTitle && item.kind === 'prose') {
+          const parsed = parseTitleInner(item.raw);
+          if (parsed !== null) {
+            // 整形フラグONの場合は整形後の文字列、OFFの場合は元のまま
+            let text = item.text; // デフォルトは字下げされた prose のテキスト
+            if (activeTitleFmt) {
+              const parsedNoPart = { ...parsed, part: null };
+              const newInner = formatTitleInner(parsedNoPart, activeTitleFmt, null);
+              if (newInner !== null) text = newInner;
+            } else {
+              // 整形しない場合は字下げなしの裸のテキストを使う
+              text = item.raw;
+            }
+            tagged[i] = { kind: 'bare-title', text, raw: item.raw };
+            skippedCount++;
+            indentedCount--;
+          }
+          awaitingBareTitle = false;
+        } else {
+          awaitingBareTitle = false;
+        }
+      }
+    }
+
+    // 空行詰め設定を取得
+    const compactProse    = document.getElementById('compactProse').checked;
+    const compactDialogue = document.getElementById('compactDialogue').checked;
+    const compactSystem   = document.getElementById('compactSystem').checked;
+
+    const compactKinds = new Set();
+    if (compactProse)    compactKinds.add('prose');
+    if (compactDialogue) compactKinds.add('dialogue');
+    if (compactSystem)   { compactKinds.add('system'); compactKinds.add('copyright'); }
+
+    // 第1段階: 同種間の空行除去
+    let stage1 = tagged.filter((item, i) => {
+      if (item.kind !== 'empty') return true;
+      if (compactKinds.size === 0) return true;
+      let prev = null;
+      for (let j = i - 1; j >= 0; j--) {
+        if (tagged[j].kind !== 'empty') { prev = tagged[j].kind; break; }
+      }
+      let next = null;
+      for (let j = i + 1; j < tagged.length; j++) {
+        if (tagged[j].kind !== 'empty') { next = tagged[j].kind; break; }
+      }
+      if (prev !== null && next !== null && prev === next && compactKinds.has(prev)) return false;
+      return true;
+    });
+
+    // ＜＞タイトル行のインデックスを収集（冒頭・末尾の特定に使用）
+    const isAngleTitle = (item) =>
+      item.kind === 'system' && /^[＜<]/.test(item.raw);
+
+    const titleIndices = [];
+    for (let i = 0; i < stage1.length; i++) {
+      if (isAngleTitle(stage1[i])) titleIndices.push(i);
+    }
+
+    // 第2段階: 末尾ⓒ詰め（末尾タイトル直後のⓒ行を詰める）
+    const copyrightJoin = document.getElementById('copyrightJoin').checked;
+    if (copyrightJoin && titleIndices.length >= 2) {
+      const lastTitleIdx = titleIndices[titleIndices.length - 1];
+      // 末尾タイトル以降で最初のcopyright行を探す
+      let copyrightIdx = -1;
+      for (let i = lastTitleIdx + 1; i < stage1.length; i++) {
+        if (stage1[i].kind === 'copyright') { copyrightIdx = i; break; }
+        if (stage1[i].kind !== 'empty') break; // ⓒ以外の内容があれば諦める
+      }
+      if (copyrightIdx > lastTitleIdx + 1) {
+        // タイトルとⓒの間の空行を削除
+        stage1.splice(lastTitleIdx + 1, copyrightIdx - lastTitleIdx - 1);
+      }
+    }
+
+    // 第3段階: タイトル前後の空行を正確に3行に調整
+    const titleBlankLines = document.getElementById('titleBlankLines').checked;
+    if (titleBlankLines) {
+      stage1 = adjustTitleBlankLines(stage1);
+    }
+
+    const result = stage1.map(item => item.text);
 
     document.getElementById('output').value = result.join('\n');
     document.getElementById('indentedLines').textContent = indentedCount;
     document.getElementById('skippedLines').textContent  = skippedCount;
     document.getElementById('emptyLines').textContent    = emptyCount;
   }
+
+  // タイトル前後の空行を正確に調整する
+  // - 冒頭タイトル（最初の＜＞）の「後」に3行
+  //   - 直後に裸タイトル（bare-title）がある場合: タイトル→3行→裸タイトル→2行→本文
+  // - 末尾タイトル（最後の＜＞）の「前」に3行
+  // 冒頭と末尾が同じ場合はどちらも適用しない（タイトル1つだけの場合）
+  function adjustTitleBlankLines(tagged) {
+    const isAngleTitle = (item) =>
+      item && item.kind === 'system' && /^[＜<]/.test(item.raw);
+    const isBareTitle = (item) =>
+      item && item.kind === 'bare-title';
+
+    const makeEmpty = () => ({ kind: 'empty', text: '', raw: '' });
+
+    const titleIndices = [];
+    for (let i = 0; i < tagged.length; i++) {
+      if (isAngleTitle(tagged[i])) titleIndices.push(i);
+    }
+
+    if (titleIndices.length < 2) return tagged;
+
+    const firstTitleIdx = titleIndices[0];
+    const lastTitleIdx  = titleIndices[titleIndices.length - 1];
+
+    let result = [...tagged];
+
+    // ===== 末尾タイトルの「前」を3行に調整 =====
+    let beforeEmptyStart = lastTitleIdx;
+    while (beforeEmptyStart > 0 && result[beforeEmptyStart - 1].kind === 'empty') {
+      beforeEmptyStart--;
+    }
+    const beforeEmptyCount = lastTitleIdx - beforeEmptyStart;
+    if (beforeEmptyStart > 0) {
+      const diff = 3 - beforeEmptyCount;
+      if (diff > 0) {
+        const additions = Array.from({ length: diff }, () => makeEmpty());
+        result.splice(lastTitleIdx, 0, ...additions);
+      } else if (diff < 0) {
+        result.splice(lastTitleIdx + diff, -diff);
+      }
+    }
+
+    // ===== 冒頭タイトルの「後」を調整 =====
+    // 冒頭タイトル直後の空行をスキップして、次の非空行を探す
+    let afterEmptyEnd = firstTitleIdx + 1;
+    while (afterEmptyEnd < result.length && result[afterEmptyEnd].kind === 'empty') {
+      afterEmptyEnd++;
+    }
+    if (afterEmptyEnd >= result.length) return result; // 後ろに何もない
+
+    const nextItem = result[afterEmptyEnd];
+    const hasBareTitle = isBareTitle(nextItem);
+
+    // 冒頭タイトル直後は常に3行
+    const afterEmptyCount = afterEmptyEnd - firstTitleIdx - 1;
+    const targetAfterTitle = 3;
+    const diffAfter = targetAfterTitle - afterEmptyCount;
+    if (diffAfter > 0) {
+      const additions = Array.from({ length: diffAfter }, () => makeEmpty());
+      result.splice(firstTitleIdx + 1, 0, ...additions);
+    } else if (diffAfter < 0) {
+      result.splice(firstTitleIdx + 1, -diffAfter);
+    }
+
+    // 裸タイトルがある場合、その後ろの空行を2行に調整
+    if (hasBareTitle) {
+      // 再計算: 冒頭タイトル + 空行 + 裸タイトル の位置
+      const bareTitleIdx = firstTitleIdx + 1 + targetAfterTitle;
+      let afterBareEnd = bareTitleIdx + 1;
+      while (afterBareEnd < result.length && result[afterBareEnd].kind === 'empty') {
+        afterBareEnd++;
+      }
+      // 裸タイトルの後ろに本文（非空行）がある場合のみ調整
+      if (afterBareEnd < result.length) {
+        const afterBareEmptyCount = afterBareEnd - bareTitleIdx - 1;
+        const targetAfterBare = 2;
+        const diffBare = targetAfterBare - afterBareEmptyCount;
+        if (diffBare > 0) {
+          const additions = Array.from({ length: diffBare }, () => makeEmpty());
+          result.splice(bareTitleIdx + 1, 0, ...additions);
+        } else if (diffBare < 0) {
+          result.splice(bareTitleIdx + 1, -diffBare);
+        }
+      }
+    }
+
+    return result;
+  }
+
+  // 選択中の変換モードセット（同一グループは排他）
+  // グループ: asterisk = full2half / half2full, bracket = bracket2half / bracket2full
+  const CONVERT_GROUP = {
+    'full2half':    'asterisk',
+    'half2full':    'asterisk',
+    'bracket2half': 'bracket',
+    'bracket2full': 'bracket',
+    'angle2half':   'angle',
+    'angle2full':   'angle',
+  };
+  const activeConvert = new Set();
+
+  // 主語統一：null = 変換なし、それ以外は統一する語
+  let activePronoun = '俺'; // デフォルトは俺
+  const PRONOUNS = ['俺', '僕', '私', 'オレ'];
+
+  // タイトル整形：null = 変換なし
+  let activeTitleFmt = 'ep-dot'; // デフォルトは Episode 1.
+  const TITLE_FMT_IDS = ['ep-dot', 'ep-jp', 'wa', 'shou'];
+
+  // パート番号括弧：'half' = (1)  /  'full' = （1）  /  null = 元のまま
+  let activeTitlePartFmt = 'half'; // デフォルト半角
+
+  // タイトル内余白：'on' = ＜ ... ＞  /  'off' = ＜...＞
+  let activeTitlePad = 'on'; // デフォルトは余白あり
+
+  // タイトル行のinner textを解析してエピソード番号・タイトル・パートを抽出
+  function parseTitleInner(inner) {
+    // inner = 括弧を除いたトリム済み文字列
+    // 特殊語マップ（キーはlowercase比較用）
+    const SPECIAL = {
+      'prologue':    { label: 'prologue' },
+      'prolog':      { label: 'prologue' },
+      'プロローグ':   { label: 'prologue' },
+      '序章':         { label: 'prologue' },
+      'epilogue':    { label: 'epilogue' },
+      'エピローグ':   { label: 'epilogue' },
+      '終章':         { label: 'epilogue' },
+      '後記':         { label: 'epilogue' },
+      'side story':  { label: 'side' },
+      'sidestory':   { label: 'side' },
+      'side':        { label: 'side' },
+      '番外編':       { label: 'side' },
+      'extra':       { label: 'side' },
+    };
+
+    // パート番号を末尾から取り出す: (1) （1） 完 など
+    // 全角・半角カッコ両対応、数字以外に 완/完/終/了/fin も
+    let part = '';
+    const partMatch = inner.match(/\s*([\(（]\s*(?:\d+|완|完|終|了|fin|end)\s*[\)）])\s*$/i);
+    if (partMatch) {
+      // 中身の数字だけ取り出して後で括弧を付け直す
+      const partContent = partMatch[1].replace(/^[\(（]\s*/, '').replace(/\s*[\)）]$/, '').trim();
+      part = { content: partContent }; // オブジェクトで保持、出力時に括弧を付ける
+      inner = inner.slice(0, inner.length - partMatch[0].length).trim();
+    }
+
+    // 数字付きパターン群
+    // 区切り文字: ピリオド(半角/全角)、空白(半角/全角)、ハイフン類、全角/半角コロン
+    // （複数文字対応のため + で繰り返し）
+    const SEP = `[\\.．\\s\\u3000\\-－–—：:]+`;
+    const numPatterns = [
+      // Episode / Ep / エピソード
+      new RegExp(`^(?:episode|ep\\.?|エピソード)\\s*(\\d+)${SEP}(.*)`, 'i'),
+      new RegExp(`^(?:episode|ep\\.?|エピソード)\\s*(\\d+)$`, 'i'),
+      // 第N話/章/回
+      new RegExp(`^第\\s*(\\d+)\\s*[話章回](?:${SEP}(.*))?$`),
+      // N화
+      new RegExp(`^(\\d+)화(?:${SEP}(.*))?$`, 'i'),
+      // Chapter / Ch
+      new RegExp(`^(?:chapter|ch\\.?|チャプター|章)\\s*(\\d+)${SEP}(.*)`, 'i'),
+      new RegExp(`^(?:chapter|ch\\.?|チャプター|章)\\s*(\\d+)$`, 'i'),
+      // 「N. タイトル」のような先頭に裸の数字
+      /^(\d+)\.\s+(.*)/,
+    ];
+
+    for (const pat of numPatterns) {
+      const m = inner.match(pat);
+      if (m) {
+        const num = parseInt(m[1], 10);
+        const title = (m[2] || '').trim();
+        return { num, title, part, special: null };
+      }
+    }
+
+    // 特殊語チェック（番号なし）— 大文字小文字を正規化して比較
+    const lowerInner = inner.toLowerCase().trim();
+    for (const [key, val] of Object.entries(SPECIAL)) {
+      const lkey = key.toLowerCase();
+      if (lowerInner === lkey ||
+          lowerInner.startsWith(lkey + ' ') ||
+          lowerInner.startsWith(lkey + '-') ||
+          lowerInner.startsWith(lkey + '　') ||
+          lowerInner.startsWith(lkey + '.')) {
+        const rest = inner.slice(key.length).replace(/^[\s\-－–—\.：:]+/, '').trim();
+        return { num: null, title: rest, part, special: val.label };
+      }
+    }
+
+    return null;
+  }
+
+  // 解析結果を選択フォーマットで文字列化
+  function formatTitleInner(parsed, fmt, partFmt) {
+    if (!parsed) return null;
+    const { num, title, part, special } = parsed;
+
+    // パート番号の括弧を決定
+    let partStr = '';
+    if (part && part.content !== undefined) {
+      if (partFmt === 'full') {
+        partStr = ` （${part.content}）`;
+      } else {
+        // half（デフォルト）または null → 半角
+        partStr = ` (${part.content})`;
+      }
+    }
+
+    let prefix = '';
+    if (special === 'prologue') {
+      if (fmt === 'ep-dot')   prefix = 'Prologue.';
+      if (fmt === 'ep-jp')    prefix = 'プロローグ.';
+      if (fmt === 'wa')       prefix = 'プロローグ：';
+      if (fmt === 'shou')     prefix = 'プロローグ：';
+      if (!fmt)               prefix = 'プロローグ';
+    } else if (special === 'epilogue') {
+      if (fmt === 'ep-dot')   prefix = 'Epilogue.';
+      if (fmt === 'ep-jp')    prefix = 'エピローグ.';
+      if (fmt === 'wa')       prefix = 'エピローグ：';
+      if (fmt === 'shou')     prefix = 'エピローグ：';
+      if (!fmt)               prefix = 'エピローグ';
+    } else if (special === 'side') {
+      if (fmt === 'ep-dot')   prefix = 'Side Story.';
+      if (fmt === 'ep-jp')    prefix = 'サイドストーリー.';
+      if (fmt === 'wa')       prefix = '番外編：';
+      if (fmt === 'shou')     prefix = '番外編：';
+      if (!fmt)               prefix = '番外編';
+    } else if (num !== null) {
+      if (!fmt) return null; // 番号ありで整形フォーマット未選択 → 変換しない
+      if (fmt === 'ep-dot')   prefix = `Episode ${num}.`;
+      if (fmt === 'ep-jp')    prefix = `エピソード ${num}.`;
+      if (fmt === 'wa')       prefix = `第${num}話：`;
+      if (fmt === 'shou')     prefix = `第${num}章：`;
+    } else {
+      return null;
+    }
+
+    const titlePart = title ? ` ${title}` : '';
+    return prefix + titlePart + partStr;
+  }
+
+  // タイトル行1行を整形（括弧を保持しつつ中身を変換／余白を調整）
+  function reformatTitleLine(line, fmt, partFmt) {
+    const fullMatch = line.match(/^(＜)\s*(.*?)\s*(＞)\s*(.*)$/);
+    const halfMatch = line.match(/^(<)\s*(.*?)\s*(>)\s*(.*)$/);
+    const m = fullMatch || halfMatch;
+    if (!m) return line;
+
+    const open   = m[1];
+    const inner  = m[2];
+    const close  = m[3];
+    let suffix   = m[4] ? m[4].trim() : '';
+
+    // 閉じ括弧の後ろの終了マーカーを「完」に正規化
+    // 了・終・終わり・終り → 完
+    if (suffix === '了' || suffix === '終' || suffix === '終わり' || suffix === '終り') {
+      suffix = '完';
+    }  // 「完」など閉じ括弧の後ろの文字
+
+    // 中身を整形するかどうか
+    let finalInner = inner;
+    if (fmt || partFmt) {
+      const parsed = parseTitleInner(inner);
+      const newInner = formatTitleInner(parsed, fmt, partFmt);
+      if (newInner !== null) finalInner = newInner;
+    }
+
+    // 括弧内余白の適用
+    const pad = (activeTitlePad === 'off') ? '' : ' ';
+    // suffix（「完」など）は閉じ括弧の後ろに配置。間は必ず半角スペース1個で区切る
+    const suffixPart = suffix ? ' ' + suffix : '';
+    return `${open}${pad}${finalInner}${pad}${close}${suffixPart}`;
+  }
+
+  function toggleTitleFmt(fmt) {
+    activeTitleFmt = (activeTitleFmt === fmt) ? null : fmt;
+    for (const id of TITLE_FMT_IDS) {
+      const el = document.getElementById('tfmt-' + id);
+      if (el) el.classList.toggle('active', activeTitleFmt === id);
+    }
+    if (document.getElementById('input').value) processText();
+  }
+
+  function toggleTitlePartFmt(pf) {
+    activeTitlePartFmt = (activeTitlePartFmt === pf) ? null : pf;
+    const h = document.getElementById('tfmt-part-half');
+    const f = document.getElementById('tfmt-part-full');
+    if (h) h.classList.toggle('active', activeTitlePartFmt === 'half');
+    if (f) f.classList.toggle('active', activeTitlePartFmt === 'full');
+    if (document.getElementById('input').value) processText();
+  }
+
+  function toggleTitlePad(mode) {
+    // 'on' と 'off' を排他的に切替（選択解除はしない＝必ずどちらか）
+    activeTitlePad = mode;
+    const on  = document.getElementById('tfmt-pad-on');
+    const off = document.getElementById('tfmt-pad-off');
+    if (on)  on.classList.toggle('active',  activeTitlePad === 'on');
+    if (off) off.classList.toggle('active', activeTitlePad === 'off');
+    if (document.getElementById('input').value) processText();
+  }
+
+  function togglePronoun(word) {
+    activePronoun = (activePronoun === word) ? null : word;
+    for (const w of PRONOUNS) {
+      const el = document.getElementById('cv-pronoun-' + {
+        '俺': 'ore', '僕': 'boku', '私': 'wata', 'オレ': 'ore2'
+      }[w]);
+      if (el) el.classList.toggle('active', activePronoun === w);
+    }
+    if (document.getElementById('input').value) processText();
+  }
+
+  function toggleConvert(mode) {
+    const group = CONVERT_GROUP[mode];
+    // 同グループの他方を外す
+    for (const m of [...activeConvert]) {
+      if (CONVERT_GROUP[m] === group && m !== mode) activeConvert.delete(m);
+    }
+    // 自身をトグル
+    if (activeConvert.has(mode)) {
+      activeConvert.delete(mode);
+    } else {
+      activeConvert.add(mode);
+    }
+    // ボタン外観更新
+    for (const m of Object.keys(CONVERT_GROUP)) {
+      const el = document.getElementById('cv-' + m);
+      if (el) el.classList.toggle('active', activeConvert.has(m));
+    }
+
+  }
+
 
   function updateInputStats() {
     const text = document.getElementById('input').value;
@@ -535,10 +1554,18 @@
 
   function loadSample() {
     document.getElementById('input').value =
-`＜Episode 21 - 預言者の黙示録＞
+`＜Prologue - 始まりの日＞
+Prologue - 始まりの日
 
 キム・ドクジャはスマートフォンを握りしめていた。
-　十年間読み続けた小説が、ついに完結する日が来たのだ。
+序章の出来事はここから始まった。
+
+＜Prologue - 始まりの日＞完
+
+＜Episode 21 - 預言者の黙示録 (1)＞
+Episode 21 - 預言者の黙示録
+
+十年間読み続けた小説が、ついに完結する日が来たのだ。
 「まさか、本当に終わるのか……」
 画面に最終話の通知が表示される。
 ［メインシナリオ『予言者の黙示録』が開始されました。］
@@ -547,11 +1574,13 @@
 誰かが叫んだ。
 【シナリオ報酬: 生存ポイント 100】
 彼は「希望」という言葉を、もう一度噛みしめた。
-「生き残ること」、それだけが今の彼に許された選択だった。
-『こんなこと、本当に起きるのか』
-ドクジャは心の中でそう呟いた。
 
-＜Episode 21 - 預言者の黙示録＞完
+＜Episode 21 - 預言者の黙示録 (1)＞完
+
+＜Epilogue - 新たな世界＞
+Epilogue - 新たな世界
+
+彼はゆっくりと目を開いた。
 
 ⓒシンション#112ox`;
     updateInputStats();
@@ -573,7 +1602,6 @@
       return;
     }
 
-    // モダンAPI（HTTPS / localhost で動作）
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(output.value)
         .then(() => showToast('コピーしました'))
@@ -582,14 +1610,12 @@
           fallbackCopy(output);
         });
     } else {
-      // file:// やHTTPで開いた場合のフォールバック
       fallbackCopy(output);
     }
   }
 
   function fallbackCopy(textarea) {
     try {
-      // readonlyのままだとiOSで選択できないことがあるため一時解除
       const wasReadonly = textarea.hasAttribute('readonly');
       textarea.removeAttribute('readonly');
       textarea.focus();
@@ -630,10 +1656,77 @@
     setTimeout(() => t.classList.remove('show'), 1800);
   }
 
+  // ===== カスタム置換ルール =====
+  // ルールは { id, enabled, from, to } 形式で保持
+  let customRulesData = [];
+  let ruleIdCounter = 0;
+
+  function getCustomRules() {
+    // UIから現在の値を読み取って返す
+    return customRulesData.map(rule => {
+      const fromEl = document.getElementById(`custom-from-${rule.id}`);
+      const toEl   = document.getElementById(`custom-to-${rule.id}`);
+      const chkEl  = document.getElementById(`custom-chk-${rule.id}`);
+      return {
+        id: rule.id,
+        enabled: chkEl ? chkEl.checked : false,
+        from: fromEl ? fromEl.value : '',
+        to:   toEl ? toEl.value : '',
+      };
+    });
+  }
+
+  function renderCustomRules() {
+    const container = document.getElementById('customRules');
+    container.innerHTML = '';
+    for (const rule of customRulesData) {
+      const row = document.createElement('div');
+      row.className = 'custom-rule-row';
+      row.innerHTML = `
+        <input type="checkbox" id="custom-chk-${rule.id}" ${rule.enabled ? 'checked' : ''}>
+        <input type="text" id="custom-from-${rule.id}" placeholder="変換前" value="${escapeHtml(rule.from)}">
+        <span class="arrow">▶</span>
+        <input type="text" id="custom-to-${rule.id}" placeholder="変換後" value="${escapeHtml(rule.to)}">
+        <button class="remove-btn" onclick="removeCustomRule(${rule.id})" title="この行を削除">×</button>
+      `;
+      container.appendChild(row);
+    }
+    // 各入力にイベントを紐づけ（debounce処理）
+    customRulesData.forEach(rule => {
+      const fromEl = document.getElementById(`custom-from-${rule.id}`);
+      const toEl   = document.getElementById(`custom-to-${rule.id}`);
+      const chkEl  = document.getElementById(`custom-chk-${rule.id}`);
+      [fromEl, toEl, chkEl].forEach(el => {
+        if (el) el.addEventListener('input', debounceProcess);
+        if (el) el.addEventListener('change', debounceProcess);
+      });
+    });
+  }
+
+  function addCustomRule() {
+    const id = ++ruleIdCounter;
+    customRulesData.push({ id, enabled: true, from: '', to: '' });
+    renderCustomRules();
+  }
+
+  function removeCustomRule(id) {
+    // まず現在の値を保存（削除時に他の行の値が失われないため）
+    const current = getCustomRules();
+    customRulesData = current.filter(r => r.id !== id);
+    renderCustomRules();
+    if (document.getElementById('input').value) processText();
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+  // ===== /カスタム置換ルール =====
+
   // Listeners
   document.getElementById('input').addEventListener('input', updateInputStats);
 
-  // リアルタイム処理（入力や設定変更時）
   let debounceTimer;
   function debounceProcess() {
     clearTimeout(debounceTimer);
@@ -646,6 +1739,41 @@
   document.querySelectorAll('input[type=checkbox], select').forEach(el => {
     el.addEventListener('change', debounceProcess);
   });
+  // 空行詰めチェックボックスも登録（querySelectorAllに含まれるが念のため）
+  ['compactProse','compactDialogue','compactSystem','titleBlankLines','copyrightJoin',
+   'unifyEllipsis','unifyDash','fixMessatsu'].forEach(id => {
+    document.getElementById(id).addEventListener('change', debounceProcess);
+  });
+
+  // デフォルト: パート番号は半角 (1)、タイトル整形は Episode 1.、主語は 俺 をアクティブ表示
+  document.getElementById('tfmt-part-half').classList.add('active');
+  document.getElementById('tfmt-ep-dot').classList.add('active');
+  document.getElementById('cv-pronoun-ore').classList.add('active');
+
+  // カスタム置換の初期化（空のリスト）
+  renderCustomRules();
 </script>
 </body>
 </html>
+ue) processText();
+    }, 200);
+  }
+
+  document.getElementById('input').addEventListener('input', debounceProcess);
+  document.querySelectorAll('input[type=checkbox], select').forEach(el => {
+    el.addEventListener('change', debounceProcess);
+  });
+  // 空行詰めチェックボックスも登録（querySelectorAllに含まれるが念のため）
+  ['compactProse','compactDialogue','compactSystem','titleBlankLines','copyrightJoin',
+   'unifyEllipsis','unifyDash','fixMessatsu'].forEach(id => {
+    document.getElementById(id).addEventListener('change', debounceProcess);
+  });
+
+  // デフォルト: パート番号は半角 (1)、タイトル整形は Episode 1.、主語は 俺 をアクティブ表示
+  document.getElementById('tfmt-part-half').classList.add('active');
+  document.getElementById('tfmt-ep-dot').classList.add('active');
+  document.getElementById('cv-pronoun-ore').classList.add('active');
+
+  // カスタム置換の初期化（空のリスト）
+  renderCustomRules();
+</scrip
