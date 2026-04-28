@@ -787,6 +787,10 @@
       <input type="checkbox" id="fixMessatsu" checked>
       <span>「滅殺法」→「滅生法」</span>
     </label>
+    <label class="checkbox-item">
+      <input type="checkbox" id="unifyKagi" checked>
+      <span>地の文・システム行の『』を「」に統一</span>
+    </label>
   </div>
 
   <!-- カスタム置換バー -->
@@ -1088,7 +1092,7 @@
         let processed = work;
         // システム行（＜＞タイトル以外）の『』を「」に変換
         // ［］・[]・【】 などのシステムメッセージ内の引用符を統一
-        if (kind === 'system' && !/^[＜<]/.test(work)) {
+        if (kind === 'system' && !/^[＜<]/.test(work) && document.getElementById('unifyKagi').checked) {
           processed = processed.replaceAll('『', '「').replaceAll('』', '」');
         }
         const reformatted = (kind === 'system') ? reformatTitleLine(processed, activeTitleFmt, activeTitlePartFmt) : processed;
@@ -1098,7 +1102,9 @@
       // prose候補 — 裸タイトル判定は2パス目で行う
       indentedCount++;
       // 地の文の『』を「」に変換
-      let proseText = work.replaceAll('『', '「').replaceAll('』', '」');
+      let proseText = document.getElementById('unifyKagi').checked
+        ? work.replaceAll('『', '「').replaceAll('』', '」')
+        : work;
       const converted = pronounRegex ? proseText.replace(pronounRegex, activePronoun) : proseText;
       return { kind: 'prose', text: indent + converted, raw: work };
     });
