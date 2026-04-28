@@ -1035,69 +1035,65 @@
   }
 
   function processText() {
-    // 選択中の変換を入力に適用してから整形
+    // 入力欄は読み取り専用扱い。すべての置換は作業用変数 input に対してのみ適用する。
     const inputEl = document.getElementById('input');
-    if (activeConvert.size > 0 && inputEl.value) {
+    let input = inputEl.value;
+
+    // 選択中の変換を適用
+    if (activeConvert.size > 0 && input) {
       if (activeConvert.has('full2half')) {
-        inputEl.value = inputEl.value.replaceAll('＊', '*').replaceAll('＋', '+');
+        input = input.replaceAll('＊', '*').replaceAll('＋', '+');
       } else if (activeConvert.has('half2full')) {
-        inputEl.value = inputEl.value.replaceAll('*', '＊').replaceAll('+', '＋');
+        input = input.replaceAll('*', '＊').replaceAll('+', '＋');
       }
       if (activeConvert.has('bracket2half')) {
-        inputEl.value = inputEl.value.replaceAll('［', '[').replaceAll('］', ']');
+        input = input.replaceAll('［', '[').replaceAll('］', ']');
       } else if (activeConvert.has('bracket2full')) {
-        inputEl.value = inputEl.value.replaceAll('[', '［').replaceAll(']', '］');
+        input = input.replaceAll('[', '［').replaceAll(']', '］');
       }
       if (activeConvert.has('angle2half')) {
-        inputEl.value = inputEl.value.replaceAll('＜', '<').replaceAll('＞', '>');
+        input = input.replaceAll('＜', '<').replaceAll('＞', '>');
       } else if (activeConvert.has('angle2full')) {
-        inputEl.value = inputEl.value.replaceAll('<', '＜').replaceAll('>', '＞');
+        input = input.replaceAll('<', '＜').replaceAll('>', '＞');
       }
-      updateInputStats();
     }
 
     // 記号統一
-    if (inputEl.value) {
+    if (input) {
       // 三点リーダの統一（「……」）
       if (document.getElementById('unifyEllipsis').checked) {
         // 半角ドット3個以上、全角ドット3個以上、中黒3個以上、… 単独や ... を "……" に統一
         // 2個以上の連続「…」や「...」は1セットの「……」に正規化
-        let v = inputEl.value;
         // 3連続以上の半角ドット、全角ドット、中黒 → 一旦 … に変換
-        v = v.replace(/\.{3,}/g, '…');
-        v = v.replace(/．{3,}/g, '…');
-        v = v.replace(/・{3,}/g, '…');
+        input = input.replace(/\.{3,}/g, '…');
+        input = input.replace(/．{3,}/g, '…');
+        input = input.replace(/・{3,}/g, '…');
         // 既存の「…」が複数連続または単独の場合を「……」（2個）に統一
-        v = v.replace(/…+/g, '……');
-        inputEl.value = v;
+        input = input.replace(/…+/g, '……');
       }
       // ダッシュの統一（「――」）
       if (document.getElementById('unifyDash').checked) {
-        let v = inputEl.value;
         // 長音記号ー/全角マイナス―/emダッシュ—/enダッシュ–/ハイフン- の連続（2個以上）を「――」に統一
         // ただし単独の「ー」（長音）は置換しないよう注意：2個以上の連続だけを対象
-        v = v.replace(/―{2,}/g, '――');      // 既存の――連続
-        v = v.replace(/—{2,}/g, '――');       // emダッシュ連続
-        v = v.replace(/–{2,}/g, '――');       // enダッシュ連続
-        v = v.replace(/-{2,}/g, '――');       // 半角ハイフン連続
+        input = input.replace(/―{2,}/g, '――');      // 既存の――連続
+        input = input.replace(/—{2,}/g, '――');       // emダッシュ連続
+        input = input.replace(/–{2,}/g, '――');       // enダッシュ連続
+        input = input.replace(/-{2,}/g, '――');       // 半角ハイフン連続
         // 単独の em/en ダッシュも「――」に（記述で使われることが多い）
-        v = v.replace(/[—–]/g, '――');
-        inputEl.value = v;
+        input = input.replace(/[—–]/g, '――');
       }
       // 滅殺法 → 滅生法
       if (document.getElementById('fixMessatsu').checked) {
-        inputEl.value = inputEl.value.replaceAll('滅殺法', '滅生法');
+        input = input.replaceAll('滅殺法', '滅生法');
       }
       // カスタム置換
       const rules = getCustomRules();
       for (const rule of rules) {
         if (rule.enabled && rule.from) {
-          inputEl.value = inputEl.value.split(rule.from).join(rule.to);
+          input = input.split(rule.from).join(rule.to);
         }
       }
-      updateInputStats();
     }
-    const input = document.getElementById('input').value;
     const lines = input.split('\n');
     const enabledOpeners = getEnabledOpeners();
     const indent = getIndentChar();
