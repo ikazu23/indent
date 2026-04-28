@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>対訳ツール｜原文と訳文を行ごとに対応させる</title>
+<meta name="description" content="原文と訳文を1行ずつ並べて対応させ、ずれを手動で修正できる対訳整形ツール。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1512;
+    --paper: #f4ece0;
+    --paper-dark: #e8dcc8;
+    --accent: #8b2e2e;
+    --accent-soft: #c4a05d;
+    --muted: #6b5e50;
+    --rule: #d4c4a8;
+    /* セルの薄い背景（朱と金で対比） */
+    --cell-a-bg: rgba(139, 46, 46, 0.05);
+    --cell-b-bg: rgba(196, 160, 93, 0.10);
+    /* 行種マーカー（左ボーダー） */
+    --type-dialog: var(--accent);
+    --type-quote: var(--accent-soft);
+    --type-marker: var(--muted);
+    --type-heading: var(--ink);
+    --warn: #b56234;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  body {
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(139, 46, 46, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(196, 160, 93, 0.06) 0%, transparent 40%);
+  }
+
+  .tool-nav {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0.75rem 2rem 0;
+    display: flex;
+    gap: 0;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--rule);
+  }
+  .tool-nav a {
+    font-family: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+    font-size: 0.95rem;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.6rem 1.3rem;
+    letter-spacing: 0.08em;
+    border: 1px solid transparent;
+    border-bottom: none;
+    margin-bottom: -1px;
+    border-radius: 2px 2px 0 0;
+    transition: color 0.15s, background 0.15s;
+  }
+  .tool-nav a:hover { color: var(--ink); background: var(--paper-dark); }
+  .tool-nav a.current {
+    color: var(--accent);
+    background: var(--paper-dark);
+    border-color: var(--rule);
+    border-bottom-color: var(--paper-dark);
+    font-weight: 600;
+    pointer-events: none;
+  }
+  @media (max-width: 600px) {
+    .tool-nav { padding: 0.5rem 1rem 0; }
+    .tool-nav a { padding: 0.5rem 0.9rem; font-size: 0.85rem; }
+  }
+
+  .app {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+  }
+
+  header {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .title-group { display: flex; align-items: baseline; gap: 1rem; }
+  h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  h1::first-letter { color: var(--accent); }
+  .subtitle {
+    font-size: 0.85rem;
+    color: var(--muted);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+  .version {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+  }
+
+  /* 入力ペイン */
+  .editor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  @media (max-width: 900px) {
+    .editor-grid { grid-template-columns: 1fr; }
+  }
+
+  .pane {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    min-height: 220px;
+  }
+  .pane-header {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper-dark);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .pane-title {
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .pane-title::before {
+    content: '◆';
+    color: var(--accent);
+    margin-right: 0.5rem;
+  }
+  .pane.side-a .pane-title::before { color: var(--accent); }
+  .pane.side-b .pane-title::before { color: var(--accent-soft); }
+
+  textarea {
+    flex: 1;
+    width: 100%;
+    padding: 1.25rem;
+    border: none;
+    resize: vertical;
+    font-family: 'Shippori Mincho', 'Hiragino Mincho ProN', serif;
+    font-size: 1rem;
+    line-height: 1.9;
+    background: transparent;
+    color: var(--ink);
+    outline: none;
+    min-height: 200px;
+  }
+  textarea:focus { background: rgba(255, 255, 255, 0.3); }
+
+  /* アクションバー */
+  .actions-bar {
+    border: 1px solid var(--rule);
+    background: var(--paper-dark);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .actions-bar.secondary-row {
+    background: var(--paper);
+    border-top: none;
+    margin-top: -1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    padding: 0.55rem 1.4rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-radius: 2px;
+  }
+  .btn:hover { background: var(--accent); }
+  .btn.secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--ink);
+  }
+  .btn.secondary:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .stats {
+    margin-left: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  .stats.warn { color: var(--warn); font-weight: 600; }
+
+  /* 凡例 */
+  .legend-bar {
+    border: 1px solid var(--rule);
+    border-top: none;
+    background: var(--paper);
+    padding: 0.7rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: -1.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .legend-bar-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .legend-swatch {
+    display: inline-block;
+    width: 10px;
+    height: 14px;
+    border-left: 3px solid;
+    background: var(--paper);
+  }
+  .legend-swatch.l-dialog { border-left-color: var(--type-dialog); }
+  .legend-swatch.l-quote { border-left-color: var(--type-quote); }
+  .legend-swatch.l-marker { border-left-color: var(--type-marker); }
+  .legend-swatch.l-narration { border-left-color: var(--rule); }
+
+  /* 対訳ペアの表示 */
+  .output-area {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 1rem 1.25rem;
+    min-height: 200px;
+  }
+
+  .pair {
+    display: grid;
+    grid-template-columns: 36px 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 4px;
+    border-radius: 2px;
+    padding: 1px;
+  }
+  .pair:hover { background: rgba(139, 46, 46, 0.03); }
+  .pair-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-align: right;
+    padding-top: 0.5rem;
+    user-select: none;
+  }
+  .cell {
+    padding: 0.45rem 0.7rem;
+    border-radius: 2px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    min-height: 1.6em;
+    cursor: text;
+    border-left: 3px solid transparent;
+    font-family: 'Shippori Mincho', 'Hiragino Mincho ProN', serif;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    transition: outline 0.1s;
+  }
+  .cell.a { background: var(--cell-a-bg); }
+  .cell.b { background: var(--cell-b-bg); }
+  .cell.type-dialog { border-left-color: var(--type-dialog); }
+  .cell.type-quote { border-left-color: var(--type-quote); }
+  .cell.type-marker { border-left-color: var(--type-marker); }
+  .cell.type-image, .cell.type-heading { border-left-color: var(--type-heading); }
+  .cell.empty {
+    background-image: repeating-linear-gradient(
+      45deg,
+      var(--paper-dark) 0,
+      var(--paper-dark) 4px,
+      var(--paper) 4px,
+      var(--paper) 8px
+    );
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.78rem;
+    border-left-color: var(--rule);
+  }
+  .cell[contenteditable="true"]:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: -1px;
+  }
+
+  /* セル下のアクションメニュー */
+  .pair-actions {
+    grid-column: 2 / -1;
+    display: none;
+    gap: 4px;
+    margin: 4px 0 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .pair.active .pair-actions { display: flex; }
+  .pair-actions button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.12s;
+  }
+  .pair-actions button:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .pair-actions .group-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    align-self: center;
+    padding: 0 0.3rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--muted);
+    padding: 3rem 1.5rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* 説明ボックス */
+  .description {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    background: var(--paper-dark);
+    border-left: 3px solid var(--accent);
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+  .description strong { color: var(--ink); }
+  .description code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--paper);
+    padding: 0.1rem 0.4rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    font-size: 0.8rem;
+  }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+  }
+</style>
+</head>
+<body>
+<nav class="tool-nav">
+  <a href="index.html">字下げ</a>
+  <a href="remove_korean_tool.html">韓国語除去</a>
+  <a href="parallel_text_tool.html" class="current">対訳</a>
+</nav>
+<div class="app">
+  <header>
+    <div class="title-group">
+      <h1>対訳</h1>
+      <span class="subtitle">Parallel Aligner</span>
+    </div>
+    <span class="version">v1.0</span>
+  </header>
+
+  <!-- 入力ペイン -->
+  <div class="editor-grid">
+    <div class="pane side-a">
+      <div class="pane-header">
+        <span class="pane-title">テキスト A（原文）</span>
+      </div>
+      <textarea id="textA" placeholder="原文を貼り付け..."></textarea>
+    </div>
+    <div class="pane side-b">
+      <div class="pane-header">
+        <span class="pane-title">テキスト B（訳文）</span>
+      </div>
+      <textarea id="textB" placeholder="訳文を貼り付け..."></textarea>
+    </div>
+  </div>
+
+  <!-- アクションバー -->
+  <div class="actions-bar">
+    <button class="btn" onclick="parseAndRender()">対応させる</button>
+    <button class="btn secondary" onclick="autoAlign()">自動整列</button>
+    <button class="btn secondary" onclick="swap()">A↔B 入替</button>
+    <button class="btn secondary" onclick="copyOutput()">📋 コピー</button>
+    <button class="btn secondary" onclick="clearAll()">クリア</button>
+    <span class="stats" id="stats"></span>
+  </div>
+
+  <!-- 凡例 -->
+  <div class="legend-bar">
+    <span class="legend-bar-label">行種</span>
+    <span class="legend-item"><span class="legend-swatch l-dialog"></span>対話（―）</span>
+    <span class="legend-item"><span class="legend-swatch l-quote"></span>引用（「『）</span>
+    <span class="legend-item"><span class="legend-swatch l-marker"></span>区切り（+ ---）</span>
+    <span class="legend-item"><span class="legend-swatch l-narration"></span>地の文</span>
+  </div>
+
+  <!-- 出力 -->
+  <div class="output-area" id="output">
+    <div class="empty-state">
+      2つのテキストを貼り付けて「対応させる」を押してください<br>
+      （空行は無視され、各行が1単位として並びます）
+    </div>
+  </div>
+
+  <!-- 説明 -->
+  <div class="description">
+    <strong>使い方:</strong>
+    A・B 両方に行ごとのテキストを貼り付けて「対応させる」を押すと、各行が左右に並びます。セル内をクリックすると編集でき、フォーカス時にそのペアの操作メニューが下に表示されます。
+    <br><br>
+    <strong>自動整列:</strong>
+    動的計画法で行種（対話／引用／区切り／地の文）が一致するように左右の行をマッチング。本文側に余分な空行や訳抜けがあっても、構造の手がかりからずれを揃えます。
+    <br><br>
+    <strong>各ペアの操作:</strong>
+    <code>↓ずらす</code> 該当列だけ1行下にずらす ／ <code>↑結合</code> 上のセルと結合 ／ <code>分割</code> 句点で分割 ／ <code>+空行</code> 上に空行挿入 ／ <code>削除</code> ペア削除。
+  </div>
+
+  <footer>
+    地の文整形ツール · 翻訳・校正用
+  </footer>
+</div>
+
+<script>
+let pairs = [];
+
+function splitLines(text) {
+  if (!text || !text.trim()) return [];
+  const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  return normalized.split('\n')
+    .map(l => l.replace(/^[\s\u3000\t]+/, '').replace(/\s+$/, ''))
+    .filter(l => l.length > 0);
+}
+
+function classifyLine(line) {
+  if (!line) return '';
+  if (/^[―─\-—]/.test(line)) return 'dialog';
+  if (/^["「『“〝]/.test(line)) return 'quote';
+  if (line.trim() === '+' || line.trim() === '---') return 'marker';
+  if (/^!\[/.test(line)) return 'image';
+  if (/^[<＜]/.test(line)) return 'heading';
+  return 'narration';
+}
+
+function parseAndRender() {
+  const a = document.getElementById('textA').value;
+  const b = document.getElementById('textB').value;
+  const aArr = splitLines(a);
+  const bArr = splitLines(b);
+  const max = Math.max(aArr.length, bArr.length);
+  pairs = [];
+  for (let i = 0; i < max; i++) {
+    pairs.push({ a: aArr[i] || '', b: bArr[i] || '' });
+  }
+  render();
+}
+
+function autoAlign() {
+  if (pairs.length === 0) return;
+  syncFromDOM();
+  const aLines = pairs.map(p => p.a).filter(s => s);
+  const bLines = pairs.map(p => p.b).filter(s => s);
+
+  const aTypes = aLines.map(classifyLine);
+  const bTypes = bLines.map(classifyLine);
+  const m = aLines.length, n = bLines.length;
+  const dp = Array.from({length: m+1}, () => new Array(n+1).fill(0));
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      let matchScore;
+      if (aTypes[i-1] === bTypes[j-1]) {
+        matchScore = (aTypes[i-1] === 'dialog' || aTypes[i-1] === 'marker') ? 5 : 2;
+      } else {
+        matchScore = 0.5;
+      }
+      dp[i][j] = Math.max(
+        dp[i-1][j-1] + matchScore,
+        dp[i-1][j],
+        dp[i][j-1]
+      );
+    }
+  }
+  const newPairs = [];
+  let i = m, j = n;
+  while (i > 0 && j > 0) {
+    let matchScore;
+    if (aTypes[i-1] === bTypes[j-1]) {
+      matchScore = (aTypes[i-1] === 'dialog' || aTypes[i-1] === 'marker') ? 5 : 2;
+    } else {
+      matchScore = 0.5;
+    }
+    if (dp[i][j] === dp[i-1][j-1] + matchScore) {
+      newPairs.unshift({ a: aLines[i-1], b: bLines[j-1] });
+      i--; j--;
+    } else if (dp[i][j] === dp[i-1][j]) {
+      newPairs.unshift({ a: aLines[i-1], b: '' });
+      i--;
+    } else {
+      newPairs.unshift({ a: '', b: bLines[j-1] });
+      j--;
+    }
+  }
+  while (i > 0) { newPairs.unshift({ a: aLines[i-1], b: '' }); i--; }
+  while (j > 0) { newPairs.unshift({ a: '', b: bLines[j-1] }); j--; }
+  pairs = newPairs;
+  render();
+}
+
+function render() {
+  const out = document.getElementById('output');
+  if (pairs.length === 0) {
+    out.innerHTML = '<div class="empty-state">2つのテキストを貼り付けて「対応させる」を押してください</div>';
+    document.getElementById('stats').textContent = '';
+    return;
+  }
+  let html = '';
+  pairs.forEach((p, i) => {
+    const aType = classifyLine(p.a);
+    const bType = classifyLine(p.b);
+    const aClass = `cell a ${p.a ? 'type-' + aType : 'empty'}`;
+    const bClass = `cell b ${p.b ? 'type-' + bType : 'empty'}`;
+    const aText = p.a ? escapeHtml(p.a) : '(空)';
+    const bText = p.b ? escapeHtml(p.b) : '(空)';
+    html += `
+      <div class="pair" data-idx="${i}">
+        <div class="pair-num">${i + 1}</div>
+        <div class="${aClass}" contenteditable="true" data-side="a" data-idx="${i}">${aText}</div>
+        <div class="${bClass}" contenteditable="true" data-side="b" data-idx="${i}">${bText}</div>
+        <div class="pair-actions">
+          <span class="group-label">A:</span>
+          <button onclick="shiftDown(${i}, 'a')">↓ずらす</button>
+          <button onclick="mergeUp(${i}, 'a')">↑結合</button>
+          <button onclick="splitCell(${i}, 'a')">分割</button>
+          <span class="group-label">B:</span>
+          <button onclick="shiftDown(${i}, 'b')">↓ずらす</button>
+          <button onclick="mergeUp(${i}, 'b')">↑結合</button>
+          <button onclick="splitCell(${i}, 'b')">分割</button>
+          <span class="group-label">行:</span>
+          <button onclick="insertBlank(${i})">+空行</button>
+          <button onclick="deletePair(${i})">削除</button>
+        </div>
+      </div>`;
+  });
+  out.innerHTML = html;
+
+  out.querySelectorAll('.cell[contenteditable="true"]').forEach(el => {
+    el.addEventListener('blur', e => {
+      const idx = parseInt(e.target.dataset.idx);
+      const side = e.target.dataset.side;
+      const text = e.target.innerText.replace(/^\(空\)$/, '').trim();
+      if (pairs[idx]) pairs[idx][side] = text;
+      e.target.closest('.pair').classList.remove('active');
+    });
+    el.addEventListener('focus', e => {
+      if (e.target.innerText === '(空)') {
+        e.target.innerText = '';
+        e.target.classList.remove('empty');
+      }
+      e.target.closest('.pair').classList.add('active');
+    });
+  });
+
+  updateStats();
+}
+
+function updateStats() {
+  const total = pairs.length;
+  const mismatched = pairs.filter(p => !p.a || !p.b).length;
+  const typeMismatch = pairs.filter(p => p.a && p.b && classifyLine(p.a) !== classifyLine(p.b)).length;
+  const stats = document.getElementById('stats');
+  let msg = `${total}行`;
+  if (mismatched > 0) msg += ` / 欠落 ${mismatched}`;
+  if (typeMismatch > 0) msg += ` / 種類不一致 ${typeMismatch}`;
+  if (mismatched === 0 && typeMismatch === 0) msg += ' ✓ 完全対応';
+  stats.textContent = msg;
+  stats.className = (mismatched > 0 || typeMismatch > 0) ? 'stats warn' : 'stats';
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[c]);
+}
+
+function mergeUp(i, side) {
+  if (i === 0) return;
+  syncFromDOM();
+  pairs[i - 1][side] = (pairs[i - 1][side] + ' ' + pairs[i][side]).trim();
+  pairs[i][side] = '';
+  pairs = pairs.filter(p => p.a || p.b);
+  render();
+}
+
+function splitCell(i, side) {
+  syncFromDOM();
+  const text = pairs[i][side];
+  if (!text) return;
+  const m = text.match(/^(.{1,}?[。.!?！？])(.+)$/);
+  let first, second;
+  if (m) {
+    first = m[1].trim();
+    second = m[2].trim();
+  } else {
+    const mid = Math.floor(text.length / 2);
+    first = text.slice(0, mid).trim();
+    second = text.slice(mid).trim();
+  }
+  pairs[i][side] = first;
+  pairs.splice(i + 1, 0, { a: side === 'a' ? second : '', b: side === 'b' ? second : '' });
+  render();
+}
+
+function insertBlank(i) {
+  syncFromDOM();
+  pairs.splice(i, 0, { a: '', b: '' });
+  render();
+}
+
+function shiftDown(i, side) {
+  syncFromDOM();
+  pairs.push({ a: '', b: '' });
+  for (let j = pairs.length - 1; j > i; j--) {
+    pairs[j][side] = pairs[j-1][side];
+  }
+  pairs[i][side] = '';
+  while (pairs.length > 0 && !pairs[pairs.length-1].a && !pairs[pairs.length-1].b) {
+    pairs.pop();
+  }
+  render();
+}
+
+function deletePair(i) {
+  syncFromDOM();
+  pairs.splice(i, 1);
+  render();
+}
+
+function syncFromDOM() {
+  document.querySelectorAll('.cell[contenteditable="true"]').forEach(el => {
+    const idx = parseInt(el.dataset.idx);
+    const side = el.dataset.side;
+    if (pairs[idx]) {
+      const text = el.innerText.replace(/^\(空\)$/, '').trim();
+      pairs[idx][side] = text;
+    }
+  });
+}
+
+function swap() {
+  const a = document.getElementById('textA');
+  const b = document.getElementById('textB');
+  [a.value, b.value] = [b.value, a.value];
+  if (pairs.length > 0) {
+    pairs = pairs.map(p => ({ a: p.b, b: p.a }));
+    render();
+  }
+}
+
+function clearAll() {
+  document.getElementById('textA').value = '';
+  document.getElementById('textB').value = '';
+  pairs = [];
+  render();
+}
+
+function copyOutput() {
+  syncFromDOM();
+  const lines = [];
+  pairs.forEach(p => {
+    if (p.a) lines.push(p.a);
+    if (p.b) lines.push(p.b);
+    lines.push('');
+  });
+  const text = lines.join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    flashMsg('コピーしました');
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    flashMsg('コピーしました');
+  });
+}
+
+function flashMsg(msg) {
+  const stats = document.getElementById('stats');
+  const orig = stats.textContent;
+  const origClass = stats.className;
+  stats.textContent = msg;
+  stats.className = 'stats';
+  setTimeout(() => {
+    stats.textContent = orig;
+    stats.className = origClass;
+  }, 1200);
+}
+</script>
+</body>
+</html>

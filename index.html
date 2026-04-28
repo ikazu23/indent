@@ -671,9 +671,49 @@
     color: var(--muted);
     letter-spacing: 0.15em;
   }
+  .tool-nav {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0.75rem 2rem 0;
+    display: flex;
+    gap: 0;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--rule);
+  }
+  .tool-nav a {
+    font-family: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+    font-size: 0.95rem;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.6rem 1.3rem;
+    letter-spacing: 0.08em;
+    border: 1px solid transparent;
+    border-bottom: none;
+    margin-bottom: -1px;
+    border-radius: 2px 2px 0 0;
+    transition: color 0.15s, background 0.15s;
+  }
+  .tool-nav a:hover { color: var(--ink); background: var(--paper-dark); }
+  .tool-nav a.current {
+    color: var(--accent);
+    background: var(--paper-dark);
+    border-color: var(--rule);
+    border-bottom-color: var(--paper-dark);
+    font-weight: 600;
+    pointer-events: none;
+  }
+  @media (max-width: 600px) {
+    .tool-nav { padding: 0.5rem 1rem 0; }
+    .tool-nav a { padding: 0.5rem 0.9rem; font-size: 0.85rem; }
+  }
 </style>
 </head>
 <body>
+<nav class="tool-nav">
+  <a href="index.html" class="current">字下げ</a>
+  <a href="remove_korean_tool.html">韓国語除去</a>
+  <a href="parallel_text_tool.html">対訳</a>
+</nav>
 <div class="app">
   <header>
     <div class="title-group">
