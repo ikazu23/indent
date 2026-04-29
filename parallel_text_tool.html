@@ -495,6 +495,7 @@ function classifyLine(line) {
   if (line.trim() === '+' || line.trim() === '---') return 'marker';
   if (/^!\[/.test(line)) return 'image';
   if (/^[<＜]/.test(line)) return 'heading';
+  if (/^[[［]/.test(line)) return 'system';
   return 'narration';
 }
 
@@ -525,7 +526,7 @@ function autoAlign() {
     for (let j = 1; j <= n; j++) {
       let matchScore;
       if (aTypes[i-1] === bTypes[j-1]) {
-        matchScore = (aTypes[i-1] === 'dialog' || aTypes[i-1] === 'marker') ? 5 : 2;
+        matchScore = (aTypes[i-1] === 'dialog' || aTypes[i-1] === 'marker' || aTypes[i-1] === 'system') ? 5 : 2;
       } else {
         matchScore = 0.5;
       }
@@ -541,7 +542,7 @@ function autoAlign() {
   while (i > 0 && j > 0) {
     let matchScore;
     if (aTypes[i-1] === bTypes[j-1]) {
-      matchScore = (aTypes[i-1] === 'dialog' || aTypes[i-1] === 'marker') ? 5 : 2;
+      matchScore = (aTypes[i-1] === 'dialog' || aTypes[i-1] === 'marker' || aTypes[i-1] === 'system') ? 5 : 2;
     } else {
       matchScore = 0.5;
     }
@@ -605,7 +606,14 @@ function render() {
       const side = e.target.dataset.side;
       const text = e.target.innerText.replace(/^\(空\)$/, '').trim();
       if (pairs[idx]) pairs[idx][side] = text;
-      e.target.closest('.pair').classList.remove('active');
+      // ボタンクリックのためにblurによるactive削除を少し遅らせる
+      setTimeout(() => {
+        // まだ同じpair内にフォーカスがあれば消さない
+        const pair = e.target.closest('.pair');
+        if (pair && !pair.contains(document.activeElement)) {
+          pair.classList.remove('active');
+        }
+      }, 150);
     });
     el.addEventListener('focus', e => {
       if (e.target.innerText === '(空)') {
@@ -613,6 +621,13 @@ function render() {
         e.target.classList.remove('empty');
       }
       e.target.closest('.pair').classList.add('active');
+    });
+  });
+
+  // pair-actions内のmousedownでpreventDefault → blurが発火しない
+  out.querySelectorAll('.pair-actions').forEach(actions => {
+    actions.addEventListener('mousedown', e => {
+      e.preventDefault();
     });
   });
 
